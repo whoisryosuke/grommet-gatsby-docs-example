@@ -10,7 +10,7 @@ export default class MDXPage extends Component {
     const post = this.props.data.page
 
     return (
-      <Layout className="Page">
+      <Layout className="Page" title={post.frontmatter.title}>
         <SEO key={`seo-${post.fields.slug}`} postData={post} isBlogPost />
         <div as="article" id="Article">
           <MDXRenderer>{post.body}</MDXRenderer>

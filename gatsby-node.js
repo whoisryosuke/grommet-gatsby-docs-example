@@ -7,6 +7,7 @@
 const path = require(`path`)
 const { createFilePath } = require(`gatsby-source-filesystem`)
 const createPaginatedPages = require("gatsby-paginate")
+const slugify = require("slugify")
 
 /**
  * Custom Webpack config
@@ -31,18 +32,26 @@ exports.onCreateWebpackConfig = ({ config, actions }) => {
 exports.onCreateNode = ({ node, getNode, boundActionCreators }) => {
   const { createNodeField } = boundActionCreators
 
-  if (node.internal.type === "Mdx" && node.frontmatter.title !== "") {
-    const value = createFilePath({ node, getNode, basePath: `pages` })
-    createNodeField({
-      // Name of the field you are adding
+  if (node.internal.type === "Mdx") {
+    const {
+      frontmatter: { title, section },
+    } = node
+    let newNode = {
       name: "slug",
-      // Individual MDX node
       node,
-      // Generated value based on filepath with "blog" prefix. We
-      // don't need a separating "/" before the value because
-      // createFilePath returns a path with the leading "/".
-      value: `${value}`,
-    })
+    }
+
+    /**
+     * If we define a section, categorize page there
+     */
+    if (section) {
+      newNode.value = `${slugify(section.toLowerCase())}/${slugify(
+        title.toLowerCase()
+      )}`
+    } else {
+      newNode.value = createFilePath({ node, getNode, basePath: `pages` })
+    }
+    createNodeField(newNode)
   }
 }
 

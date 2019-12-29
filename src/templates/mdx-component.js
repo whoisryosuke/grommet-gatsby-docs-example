@@ -1,29 +1,42 @@
-import React, { Component } from "react"
+import React from "react"
 import { graphql } from "gatsby"
 import { MDXRenderer } from "gatsby-plugin-mdx"
+import { Box, Heading } from "grommet"
 
-import Layout from "../layouts/BaseLayout"
-import SEO from "../components/seo"
-import PropsTable from "../components/PropsTable/PropsTable"
+import Layout from "@layouts/BaseLayout"
+import SEO from "@components/seo"
+import Page from "@components/Page"
+import PropsTable from "@components/PropsTable/PropsTable"
+import PageHeader from "@components/PageHeader"
 
-export default class MDXPage extends Component {
-  render() {
-    const { component, page } = this.props.data
-    console.log("component", this.props.data)
+const MDXPage = ({ data: { component, page } }) => {
+  return (
+    <Layout className="Page" title={page.frontmatter.title}>
+      <SEO key={`seo-${page.fields.slug}`} postData={page} isBlogPost />
+      <Page as="article" id="Component">
+        <Box margin={{ bottom: "large" }} width="xlarge" alignSelf="center">
+          <Box align="center">
+            <PageHeader
+              label={component.displayName || component.frontmatter.title}
+              summary={component.docblock}
+            />
+          </Box>
+          <Box>
+            <MDXRenderer>{page.body}</MDXRenderer>
 
-    return (
-      <Layout className="Page">
-        <SEO key={`seo-${page.fields.slug}`} postData={page} isBlogPost />
-        <div as="article" id="Component">
-          <h1>{component.displayName}</h1>
-          <p>{component.docblock}</p>
-          <MDXRenderer>{page.body}</MDXRenderer>
-          <h2 style={{ marginTop: "2rem" }}>Props:</h2>
-          <PropsTable propMetaData={component.childrenComponentProp} />
-        </div>
-      </Layout>
-    )
-  }
+            <Box
+              margin={{ vertical: "large" }}
+              pad={{ top: "large" }}
+              border={{ side: "top", size: "medium", color: "brand" }}
+            >
+              <Heading level={2}>Props:</Heading>
+              <PropsTable propMetaData={component.childrenComponentProp} />
+            </Box>
+          </Box>
+        </Box>
+      </Page>
+    </Layout>
+  )
 }
 
 export const query = graphql`
@@ -43,23 +56,19 @@ export const query = graphql`
       id
       displayName
       docblock
-      doclets
       childrenComponentProp {
         name
         docblock
         required
-        parentType {
-          name
-        }
         type {
+          name
           value
         }
         defaultValue {
           value
-          computed
         }
       }
-      composes
     }
   }
 `
+export default MDXPage
