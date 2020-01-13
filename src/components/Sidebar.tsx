@@ -1,6 +1,6 @@
 import React from "react"
 import { StaticQuery, graphql } from "gatsby"
-import { Box, Button, Text } from "grommet"
+import { Box, Button, Text, Anchor } from "grommet"
 
 interface Props {}
 
@@ -27,15 +27,15 @@ const Sidebar: React.FC<Props> = () => {
       `}
       render={data => {
         const nav = data.pages.edges.map(({ node }) => (
-          <Button
+          <Anchor
             key={node.frontmatter.title}
             href={node.frontmatter.slug}
-            hoverIndicator
+            color="dark-3"
           >
             <Box pad={{ horizontal: "medium", vertical: "small" }}>
               <Text>{node.frontmatter.title}</Text>
             </Box>
-          </Button>
+          </Anchor>
         ))
         return nav
       }}
