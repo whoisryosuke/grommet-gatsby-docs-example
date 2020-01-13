@@ -17,21 +17,25 @@ const MDXPage = ({ data: { component, page } }) => {
         <Box margin={{ bottom: "large" }} width="xlarge" alignSelf="center">
           <Box align="center">
             <PageHeader
-              label={component.displayName || component.frontmatter.title}
-              summary={component.docblock}
+              label={
+                (component && component.displayName) || page.frontmatter.title
+              }
+              summary={component && component.docblock}
             />
           </Box>
           <Box>
             <MDXRenderer>{page.body}</MDXRenderer>
 
-            <Box
-              margin={{ vertical: "large" }}
-              pad={{ top: "large" }}
-              border={{ side: "top", size: "medium", color: "brand" }}
-            >
-              <Heading level={2}>Props:</Heading>
-              <PropsTable propMetaData={component.childrenComponentProp} />
-            </Box>
+            {component && component.childrenComponentProp && (
+              <Box
+                margin={{ vertical: "large" }}
+                pad={{ top: "large" }}
+                border={{ side: "top", size: "medium", color: "brand" }}
+              >
+                <Heading level={2}>Props:</Heading>
+                <PropsTable propMetaData={component.childrenComponentProp} />
+              </Box>
+            )}
           </Box>
         </Box>
       </Page>
